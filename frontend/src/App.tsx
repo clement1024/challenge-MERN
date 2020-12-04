@@ -1,11 +1,9 @@
 import React from 'react';
-import Crud from "./components/Crud";
-import Header from "./components/Header";
+import Crud from "./layout/Crud";
 
 function App() {
   return (
     <div className="App">
-      <Header />
       <Crud />
     </div>
   );

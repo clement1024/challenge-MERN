@@ -1,4 +1,6 @@
-const Styles = {
+import { Theme } from '@material-ui/core/styles';
+
+export const Styles = (theme: Theme) => ({
     //Header Component
     appBar: {
       backgroundColor: "rgba(0,0,0,0.2)"
@@ -45,7 +47,5 @@ const Styles = {
       margin: "0 auto",
       marginTop: "10px"
     }
-  };
-  
-  export default Styles;
+  });
   

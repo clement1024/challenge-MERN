@@ -1,9 +1,19 @@
 import React from "react";
-import { withStyles, TextField, Button } from "@material-ui/core";
-import PropTypes from "prop-types";
-import Styles from "../style/Styles.js";
+import { TextField, Button } from "@material-ui/core";
 
-const CreateData = props => {
+
+interface CreateDataProps {
+  Id: number,
+  Name: string,
+  Description: string,
+  Occupation: string,
+  addData: Function,
+  handleChange: Function,
+  saveUpdate: Function,
+  isEditing: boolean,
+};
+
+const CreateData : React.FC<CreateDataProps> = props => {
   const {
     Id,
     Name,
@@ -12,18 +22,17 @@ const CreateData = props => {
     handleChange,
     addData,
     saveUpdate,
-    classes,
     isEditing
   } = props;
 
   return (
-    <div className={classes.formWrapper}>
-      <form onSubmit={addData}>
+    <div>
+      <form onSubmit={()=>addData()}>
         <TextField
           id="name-id"
           name="Name"
           label="Name"
-          onChange={handleChange}
+          onChange={(e)=>handleChange(e)}
           value={Name}
           fullWidth
           required
@@ -32,7 +41,7 @@ const CreateData = props => {
           id="occupation-id"
           name="Occupation"
           label="Occupation"
-          onChange={handleChange}
+          onChange={(e)=>handleChange(e)}
           value={Occupation}
           fullWidth
           required
@@ -41,7 +50,7 @@ const CreateData = props => {
           id="desc-id"
           name="Description"
           label="Description"
-          onChange={handleChange}
+          onChange={(e)=>handleChange(e)}
           value={Description}
           fullWidth
           required
@@ -50,7 +59,6 @@ const CreateData = props => {
           <Button
             type="submit"
             variant="outlined"
-            className={classes.button}
             onClick={e => saveUpdate(e, Id)}
             fullWidth
           >
@@ -60,7 +68,6 @@ const CreateData = props => {
           <Button
             type="submit"
             variant="outlined"
-            className={classes.button}
             fullWidth
           >
             Submit
@@ -71,15 +78,4 @@ const CreateData = props => {
   );
 };
 
-CreateData.propTypes = {
-  classes: PropTypes.object.isRequired,
-  Id: PropTypes.number,
-  Name: PropTypes.string.isRequired,
-  Description: PropTypes.string.isRequired,
-  Occupation: PropTypes.string.isRequired,
-  addData: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  saveUpdate: PropTypes.func.isRequired
-};
-
-export default withStyles(Styles)(CreateData);
+export default (CreateData);

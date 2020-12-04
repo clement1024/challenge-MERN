@@ -1,8 +1,13 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { User } from './Crud';
 import ListCard from "./ListCard";
 
-const DataLists = props => {
+interface DataListsProps{
+  removeData: Function,
+  handleUpdate: Function,
+  lists: User[]
+}
+const DataLists:React.FC<DataListsProps> = props => {
   const { lists, removeData, handleUpdate } = props;
   return (
     <div>
@@ -21,12 +26,6 @@ const DataLists = props => {
       })}
     </div>
   );
-};
-
-DataLists.propTypes = {
-  removeData: PropTypes.func.isRequired,
-  handleUpdate: PropTypes.func.isRequired,
-  lists: PropTypes.array.isRequired
 };
 
 export default DataLists;

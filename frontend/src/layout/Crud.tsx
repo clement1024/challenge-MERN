@@ -11,52 +11,92 @@ import {
   makeStyles,
   Grid
 } from '@material-ui/core';
-import CreateData from "./CreateData.js";
-import DataLists from "./DataLists.js";
+import CreateData from "./CreateData";
+import DataLists from "./DataLists";
 import TopBar from "./TopBar";
 
-class Crud extends Component {
-  constructor(props) {
+export interface User {
+  Id : number,
+  Name : string,
+  Occupation : string,
+  Description : string,
+}
+interface MyState {
+  dataLists : User[],
+  Id : number,
+  Name : string,
+  Occupation : string,
+  Description : string,
+  isEditing: boolean,
+  isMobileNavOpen : boolean,
+}
+
+// Combine both state + dispatch props - as well as any props we want to pass - in a union type.
+
+class Crud extends React.Component<{}, MyState>  {
+  public state : MyState = {
+    dataLists: [
+      {
+        Id: Math.random(),
+        Name: "Tony Stark",
+        Occupation: "Iron Man",
+        Description:
+          "SuperHero, PlayBoy, Billionaire, Philanthropist, Genious"
+      },
+      {
+        Id: Math.random(),
+        Name: "Steve Rogers",
+        Occupation: "Captain America",
+        Description: "SuperHero, Captain, Soldier "
+      },
+      {
+        Id: Math.random(),
+        Name: "Thor",
+        Occupation: "God of Thunder",
+        Description: "SuperHero, God, King"
+      }
+    ],
+    Id: 0,
+    Name: "",
+    Occupation: "",
+    Description: "",
+    isEditing: false,
+    isMobileNavOpen : false,
+  };
+  constructor(props : any) {
     super(props);
-    this.state = {
-      dataLists: [
-        {
-          Id: Math.random(),
-          Name: "Tony Stark",
-          Occupation: "Iron Man",
-          Description:
-            "SuperHero, PlayBoy, Billionaire, Philanthropist, Genious"
-        },
-        {
-          Id: Math.random(),
-          Name: "Steve Rogers",
-          Occupation: "Captain America",
-          Description: "SuperHero, Captain, Soldier "
-        },
-        {
-          Id: Math.random(),
-          Name: "Thor",
-          Occupation: "God of Thunder",
-          Description: "SuperHero, God, King"
-        }
-      ],
-      Id: null,
-      Name: "",
-      Occupation: "",
-      Description: "",
-      isEditing: false,
-      isMobileNavOpen : false,
-    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.addData = this.addData.bind(this);
+    this.reset = this.reset.bind(this);
+    this.removeData = this.removeData.bind(this);
+    this.saveUpdate = this.saveUpdate.bind(this);
   }
 
-  handleChange = e => {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
+  private handleChange  (e : React.ChangeEvent<HTMLInputElement> ){
+    const name = e.target.name;
+    if(name === 'Name')
+    {
+      this.setState({
+        Name : e.target.value
+      });
+    }
+    if(name === 'Occupation')
+    {
+      this.setState({
+        Occupation : e.target.value
+      });
+    }
+    if(name === 'Description')
+    {
+      this.setState({
+        Description : e.target.value
+      });
+    }
   };
 
   //To add data to the dataList array
-  addData = e => {
+  private addData (e : React.ChangeEvent<HTMLInputElement> ) {
     e.preventDefault();
     const { Name, Occupation, Description } = this.state;
     if (!Name || !Occupation || !Description) return;
@@ -76,7 +116,7 @@ class Crud extends Component {
   };
 
   //To reset the form fields
-  reset = () => {
+  public reset () {
     this.setState({
       Name: "",
       Occupation: "",
@@ -85,7 +125,7 @@ class Crud extends Component {
   };
 
   //To remove the data from the list
-  removeData = Id => {
+  public removeData (Id : number) {
     let dataLists = this.state.dataLists.filter(data => {
       return data.Id !== Id;
     });
@@ -96,7 +136,8 @@ class Crud extends Component {
   };
 
   //To handle the data Update
-  handleUpdate = (e, Id) => {
+  public handleUpdate(e : any, Id : number) {
+    console.log(Id);
     const index = this.state.dataLists.findIndex(data => {
       return data.Id === Id;
     });
@@ -111,14 +152,20 @@ class Crud extends Component {
   };
 
   //To save the updated data
-  saveUpdate = (e, Id) => {
-    const newData = this.state.dataLists.map(data => {
+  public saveUpdate (e: any, Id: number) {
+    let newData : User[] = [];
+    this.state.dataLists.map(data => {
       if (data.Id === Id) {
-        return {
+        newData.push({
+          Id: data.Id,
           Name: this.state.Name,
           Occupation: this.state.Occupation,
           Description: this.state.Description
-        };
+        });
+      }
+      else
+      {
+        newData.push(data);
       }
       return data;
     });
@@ -133,7 +180,7 @@ class Crud extends Component {
     );
   };
 
-  render() {
+  public render() {
     const {
       dataLists,
       Id,
@@ -145,10 +192,10 @@ class Crud extends Component {
     } = this.state;
     return (
       <Grid container spacing={0}>
-        <Grid item ls={12} md={12} sm={12} xs={12}>
+        <Grid item={true} lg={12} xs={12} sm={12}>
           <TopBar onMobileNavOpen={() => this.setState({...this.state, isMobileNavOpen: true})} />
         </Grid>
-        <Grid item ls={6} md={6} sm={12} xs={12}>
+        <Grid item={true} lg={6} md={6} sm={12} xs={12}>
           <CreateData
             Id={Id}
             Name={Name}
@@ -160,7 +207,7 @@ class Crud extends Component {
             isEditing={isEditing}
           />
         </Grid>
-        <Grid item ls={6} md={6} sm={12} xs={12}>
+        <Grid item lg={6} md={6} sm={12} xs={12}>
           <Hidden lgUp>
             <Drawer
               anchor="right"
@@ -168,14 +215,14 @@ class Crud extends Component {
               open={isMobileNavOpen}
               variant="temporary"
             >
-            <Grid item ls={12} md={12} sm={12} xs={12}>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
               <DataLists
                 lists={dataLists}
                 removeData={this.removeData}
                 handleUpdate={this.handleUpdate}
               />
             </Grid>
-            <Grid item ls={12} md={12} sm={12} xs={12}>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
               <CreateData
                 Id={Id}
                 Name={Name}
@@ -195,14 +242,14 @@ class Crud extends Component {
               open
               variant="persistent"
             >
-              <Grid item ls={12} md={12} sm={12} xs={12}>
+              <Grid item lg={12} md={12} sm={12} xs={12}>
                 <DataLists
                   lists={dataLists}
                   removeData={this.removeData}
                   handleUpdate={this.handleUpdate}
                 />
               </Grid>
-              <Grid item ls={12} md={12} sm={12} xs={12}>
+              <Grid item lg={12} md={12} sm={12} xs={12}>
                 <CreateData
                   Id={Id}
                   Name={Name}

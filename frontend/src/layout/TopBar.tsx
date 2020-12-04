@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import {
   AppBar,
   Badge,
@@ -22,19 +20,18 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const TopBar = ({
-  className,
+interface TopBarProps{
+  onMobileNavOpen : Function,
+}
+const TopBar:React.FC<TopBarProps> = ({
   onMobileNavOpen,
-  ...rest
 }) => {
   const classes = useStyles();
   const [notifications] = useState([]);
 
   return (
     <AppBar
-      className={clsx(classes.root, className)}
       elevation={0}
-      {...rest}
     >
       <Toolbar>
         <a href="#">
@@ -61,7 +58,9 @@ const TopBar = ({
         <Hidden lgUp>
           <IconButton
             color="inherit"
-            onClick={onMobileNavOpen}
+            onClick={()=>{
+              onMobileNavOpen();
+            }}
           >
             <MenuIcon />
           </IconButton>
@@ -71,9 +70,5 @@ const TopBar = ({
   );
 };
 
-TopBar.propTypes = {
-  className: PropTypes.string,
-  onMobileNavOpen: PropTypes.func
-};
 
 export default TopBar;
